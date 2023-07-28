@@ -1,7 +1,6 @@
 import curses
 from ball import Ball
 from paddle import Paddle
-import random
 
 # Initialize curses
 screen = curses.initscr()
@@ -16,7 +15,7 @@ border_player = width // 4 - 2
 border_bot = 3 * width // 4 + 2
 
 # Create the Ball and Paddle objects
-ball = Ball(screen, width//2, height//2, dx=1, dy=2)
+ball = Ball(screen, width//2, height//2, dx=1, dy=1)  # Adjusted dx and dy
 paddle_player = Paddle(screen, width//4, height//2 - 5)  # Unchanged position
 paddle_bot = Paddle(screen, 3*width//4, height//2 + 5)  # Unchanged position
 
@@ -46,30 +45,26 @@ try:
         # Move the Ball
         ball.move()
 
-        # Occasionally modify the direction of the ball mid-flight
-        if random.random() < 0.01:  # 1% chance to change direction
-            ball.bounce()
-
         # Check if the Ball hit the top or bottom of the screen
         if ball.y <= 0 or ball.y >= height-1:
             ball.dy *= -1  # Reverse vertical direction
 
         # Check if the Ball hit the player's Paddle
-        if paddle_player.x <= ball.x <= paddle_player.x + paddle_player.length and \
+        if paddle_player.x == ball.x and \
            paddle_player.y <= ball.y <= paddle_player.y + paddle_player.length:
             ball.dx *= -1  # Reverse horizontal direction
 
         # Check if the Ball hit the bot's Paddle
-        if paddle_bot.x <= ball.x <= paddle_bot.x + paddle_bot.length and \
+        if paddle_bot.x == ball.x and \
            paddle_bot.y <= ball.y <= paddle_bot.y + paddle_bot.length:
             ball.dx *= -1  # Reverse horizontal direction
 
         # Check if the Ball has passed a player's paddle
         if ball.x < border_player:
-            ball = Ball(screen, width//2, height//2)  # Reset the ball to the center
+            ball = Ball(screen, width//2, height//2, dx=1, dy=1)  # Reset the ball to the center with adjusted dx and dy
             score_bot += 1  # Increment the bot's score
         elif ball.x > border_bot:
-            ball = Ball(screen, width//2, height//2)  # Reset the ball to the center
+            ball = Ball(screen, width//2, height//2, dx=1, dy=1)  # Reset the ball to the center with adjusted dx and dy
             score_player += 1  # Increment the player's score
 
         # Get the user's input
